@@ -1,0 +1,19 @@
+{
+  "name": "loon-dashboard-lib",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "event-store-client": "0.0.9",
+    "merge": "^1.2.0",
+    "mongodb": "^2.2.4",
+    "q": "^1.4.1",
+    "winston": "^2.2.0",
+    "winston-papertrail": "^1.0.2"
+  }
+}
