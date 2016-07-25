@@ -9,6 +9,7 @@ AllApps.prototype.execute = function () {
     var self = this,
         deferred = q.defer();
 
+    throw new Error('Phase this out for event store');
     self._db.collection(self._collectionName).find({}, function (err, cursor) {
         if (err) {
             return deferred.reject(err);
