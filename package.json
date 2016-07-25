@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "event-store-client": "0.0.9",
+    "jackrabbit": "^4.3.0",
     "merge": "^1.2.0",
     "mongodb": "^2.2.4",
     "q": "^1.4.1",
