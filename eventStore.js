@@ -12,8 +12,8 @@ var eventStoreOptions = {
     },
     onError: function (){
         logger.error('event store erreored!', arguments);
-        eventStoreConnection = new EventStoreClient.Connection(eventStoreOptions);
-        logger.info('supposed to connect again');
+        //eventStoreConnection = new EventStoreClient.Connection(eventStoreOptions);
+        //logger.info('supposed to connect again');
     }
 };
 logger.info('Connecting to event store...');
