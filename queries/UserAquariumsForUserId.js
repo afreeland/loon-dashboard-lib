@@ -30,17 +30,29 @@ UserAquariumsForUserId.prototype._createViewModel = function () {
 
         if ( event.eventType == 'aquarium.created' ) {
             viewModel.unshift(event.data.data);
-        } else if (event.eventType == 'aquarium.inventory.created' ){
+        } else if (event.eventType == 'aquarium.inventory.created' ) {
             var aquariumVm = _.find(viewModel, {id: event.data.data.aquariumId});
 
-            //if (!aquariumVm) throw new Error('expected aquarium to exist');
             if (!aquariumVm) return;
 
             aquariumVm.inventory = aquariumVm.inventory || [];
 
             aquariumVm.inventory.push(event.data.data);
 
-            console.log();
+        } else if ( event.eventType == 'aquarium.inventory.deleted') {
+
+            var aquariumVm = _.find(viewModel, {id: event.data.data.aquariumId});
+
+            if (!aquariumVm) return;
+
+            aquariumVm.inventory = aquariumVm.inventory || [];
+
+            var inventoryIndex = _.findIndex(aquariumVm.inventory, {id: event.data.data.id});
+
+            if ( inventoryIndex > -1 ) {
+                aquariumVm.inventory.splice(inventoryIndex, 1);
+            }
+
         } else {
             throw new Error('unknown event in this stream');
         }
@@ -63,15 +75,6 @@ UserAquariumsForUserId.prototype.execute = function ( userId, options ) {
     self._queryOptions.aquariumIds = _.isString(self._queryOptions.aquariumIds) ? [self._queryOptions.aquariumIds] : self._queryOptions.aquariumIds;
 
     self._eventStore.connection.readStreamEventsForward(streamId, 0, 100, true, false, function (e) {
-        // if (self._queryOptions.aquariumIds.length > 0 ) {
-        //     if (self._queryOptions.aquariumIds.indexOf(e.data.data.aquariumId) == -1) {
-        //         return;
-        //     } else {
-        //         self._events.push(e);
-        //     }
-        // } else {
-        //     self._events.push(e);
-        // }
 
         if ( e.eventType == 'aquarium.created' ) {
             if (self._queryOptions.aquariumIds.length > 0 ) {
