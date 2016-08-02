@@ -9,7 +9,8 @@ function UserAquariumsForUserId ( options ) {
     this._events = [];
     this._eventStore = options.eventStore;
     this._queryOptions = {
-        aquariumIds: []
+        aquariumIds: [],
+        showInventory: false
     }
 }
 
@@ -29,23 +30,30 @@ UserAquariumsForUserId.prototype._createViewModel = function () {
         // }
 
         if ( event.eventType == 'aquarium.created' ) {
+            event.data.data.inventory = event.data.data.inventory || [];
+
             viewModel.unshift(event.data.data);
         } else if (event.eventType == 'aquarium.inventory.created' ) {
+
+            if ( !self._queryOptions.showInventory ) return;
+
             var aquariumVm = _.find(viewModel, {id: event.data.data.aquariumId});
 
             if (!aquariumVm) return;
 
-            aquariumVm.inventory = aquariumVm.inventory || [];
+            //aquariumVm.inventory = aquariumVm.inventory || [];
 
             aquariumVm.inventory.push(event.data.data);
 
         } else if ( event.eventType == 'aquarium.inventory.deleted') {
 
+            if ( !self._queryOptions.showInventory ) return;
+
             var aquariumVm = _.find(viewModel, {id: event.data.data.aquariumId});
 
             if (!aquariumVm) return;
 
-            aquariumVm.inventory = aquariumVm.inventory || [];
+            //aquariumVm.inventory = aquariumVm.inventory || [];
 
             var inventoryIndex = _.findIndex(aquariumVm.inventory, {id: event.data.data.id});
 
