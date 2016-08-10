@@ -1,28 +1,30 @@
 var q = require('q');
 
-function AllApps ( db ) {
-    this._db = db;
-    this._collectionName = "apps";
+function AllApps ( options ) {
+    this._events = [];
+    this._eventStore = options.eventStore;
 }
 
-AllApps.prototype.execute = function () {
+AllApps.prototype._createViewModel = function () {
     var self = this,
-        deferred = q.defer();
+        viewModel = [];
 
-    throw new Error('Phase this out for event store');
-    self._db.collection(self._collectionName).find({}, function (err, cursor) {
-        if (err) {
-            return deferred.reject(err);
-        }
+    self._events.forEach(function (e) {
+        viewModel.push(e.data.data);
+    });
 
-        cursor.toArray(function (err, data) {
-            if (err) {
-                return deferred.reject(err);
-            }
+    return viewModel;
+};
 
-            return deferred.resolve(data);
-        });
+AllApps.prototype.execute = function () {
+    var deferred = q.defer(),
+        streamId = 'systemapps',
+        self = this;
 
+    self._eventStore.connection.readStreamEventsForward(streamId, 0, 100, true, false, function (e) {
+        self._events.push(e);
+    }, self._eventStore.credentials, function () {
+        deferred.resolve(self._createViewModel());
     });
 
     return deferred.promise;
